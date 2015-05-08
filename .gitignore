@@ -1,0 +1,21 @@
+# Mac OS
+.DS_Store
+
+# TextMate
+*.tmproj
+tmtags
+
+# Vim
+*.swp
+
+# Other
+~*
+*~
+*.*~
+
+# Builds, logs and tools.
+donna
+logs/*
+tools/*
+games/*
+
