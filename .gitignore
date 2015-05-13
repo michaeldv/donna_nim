@@ -13,9 +13,11 @@ tmtags
 *~
 *.*~
 
-# Builds, logs and tools.
-donna
+# Builds, logs and caches.
 logs/*
-tools/*
-games/*
+nimcache/*
+src/nifty_donna
+src/nimcache/*
+tests/all
+tests/nimcache/*
 
