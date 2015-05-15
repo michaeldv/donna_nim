@@ -94,3 +94,6 @@ proc toString*(p: Piece): string =
 
 proc toFancy*(p: Piece): string =
   return [" ", " ", "♙", "♟", "♘", "♞", "♗", "♝", "♖", "♜", "♕", "♛", "♔", "♚"][int(p)]
+
+proc chr*(p: Piece): char =
+  return p.toString[0]
