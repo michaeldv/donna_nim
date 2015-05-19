@@ -2,25 +2,13 @@
 # Use of this source code is governed by a MIT-style license that can
 # be found in the LICENSE file.
 
-import unsigned, data
+import unsigned
+import data, init, score
 
 type
   Piece* = uint8
 
 const
-  Pawn*        = 2'u8
-  Knight*      = 4'u8
-  Bishop*      = 6'u8
-  Rook*        = 8'u8
-  Queen*       = 10'u8
-  King*        = 12'u8
-  BlackPawn*   = Pawn or 1'u8
-  BlackKnight* = Knight or 1'u8
-  BlackBishop* = Bishop or 1'u8
-  BlackRook*   = Rook or 1'u8
-  BlackQueen*  = Queen or 1'u8
-  BlackKing*   = King or 1'u8
-
   # Base offsets to polyglotRandom table for each of the pieces. Note that we're
   # mapping our piece representation to polyglot, i.e. (Piece-1) for whites and
   # (Piece-3) for blacks.
@@ -35,65 +23,65 @@ const
   ]
 
 proc king*(color: uint8): Piece =
-  return color or King
+  color or King
 
 proc queen*(color: uint8): Piece =
-  return color or Queen
+  color or Queen
 
 proc rook*(color: uint8): Piece =
-  return color or Rook
+  color or Rook
 
 proc bishop*(color: uint8): Piece =
-  return color or Bishop
+  color or Bishop
 
 proc knight*(color: uint8): Piece =
-  return color or Knight
+  color or Knight
 
 proc pawn*(color: uint8): Piece =
-  return color or Pawn
+  color or Pawn
 
-# proc score*(p: Piece, square: int): Score =
-#   ## Returns score points for a piece at given square.
-#   return pst[p][square]
+proc score*(p: Piece, square: int): Score =
+  ## Returns score points for a piece at given square.
+  pst[p][square]
 
 proc polyglot*(p: Piece, square: int): uint64 =
-  return polyglotRandom[polyglotBase[p] + square]
+  polyglotRandom[polyglotBase[p] + square]
 
 proc color*(p: Piece): uint8 =
-  return p and 1
+  p and 1
 
 proc kind*(p: Piece): int =
-  return int(p) and 0xFE
+  int(p) and 0xFE
 
 proc isWhite*(p: Piece): bool =
-  return (p and 1) == White
+  (p and 1) == White
 
 proc isBlack*(p: Piece): bool =
-  return (p and 1) == Black
+  (p and 1) == Black
 
 proc isKing*(p: Piece): bool =
-  return (p and 0xFE) == King
+  (p and 0xFE) == King
 
 proc isQueen*(p: Piece): bool =
-  return (p and 0xFE) == Queen
+  (p and 0xFE) == Queen
 
 proc isRook*(p: Piece): bool =
-  return (p and 0xFE) == Rook
+  (p and 0xFE) == Rook
 
 proc isBishop*(p: Piece): bool =
-  return (p and 0xFE) == Bishop
+  (p and 0xFE) == Bishop
 
 proc isKnight*(p: Piece): bool =
-  return (p and 0xFE) == Knight
+  (p and 0xFE) == Knight
 
 proc isPawn*(p: Piece): bool =
-  return (p and 0xFE) == Pawn
+  (p and 0xFE) == Pawn
 
 proc toString*(p: Piece): string =
-  return [" ", " ", "P", "p", "N", "n", "B", "b", "R", "r", "Q", "q", "K", "k"][int(p)]
+  [" ", " ", "P", "p", "N", "n", "B", "b", "R", "r", "Q", "q", "K", "k"][int(p)]
 
 proc toFancy*(p: Piece): string =
-  return [" ", " ", "♙", "♟", "♘", "♞", "♗", "♝", "♖", "♜", "♕", "♛", "♔", "♚"][int(p)]
+  [" ", " ", "♙", "♟", "♘", "♞", "♗", "♝", "♖", "♜", "♕", "♛", "♔", "♚"][int(p)]
 
 proc chr*(p: Piece): char =
-  return p.toString[0]
+  p.toString[0]

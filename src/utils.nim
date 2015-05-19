@@ -18,5 +18,10 @@ proc square*(row, column: int): int =
   ## Returns 0..63 square number for the given row/column coordinate.
   return (row shl 3) + column
 
+proc rank*(color: uint8, square: int): int =
+  # Returns relative rank for the square in 0..7 range. For example E2 is rank 1
+  # for white and rank 6 for black.
+  return row(square) xor (int(color) * 7)
+
 proc c*(color: uint8): string =
   return ["white", "black"][int(color)]
