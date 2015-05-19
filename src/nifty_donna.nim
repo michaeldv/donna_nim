@@ -2,7 +2,7 @@
 # Use of this source code is governed by a MIT-style license that can
 # be found in the LICENSE file.
 
-import init, bitmask as b, game as g, position, piece, move
+import init, bitmask as b, game as g, position, piece, move, score
 
 echo "Hello, Nifty Donna!"
 var
@@ -20,3 +20,9 @@ echo "p.id: ", p.id
 echo "tree[0].id: ", tree[0].id
 echo p.toString
 
+var s: Score = (42,43)
+echo s.repr
+discard s.clear
+echo s.repr
+discard s.add((1, 2))
+echo s.repr
