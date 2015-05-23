@@ -6,4 +6,4 @@ description   = "Donna chess engine port to Nim"
 license       = "MIT"
 
 [Deps]
-Requires: "nim >= 0.10.0, strfmt >= 0.7.0"
+Requires: "nim >= 0.10.0"

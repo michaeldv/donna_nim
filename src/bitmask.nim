@@ -2,7 +2,7 @@
 # Use of this source code is governed by a MIT-style license that can
 # be found in the LICENSE file.
 
-import strfmt, strutils, unsigned
+import strutils, unsigned
 
 echo "Hello from Bitmask ;-)"
 
@@ -49,19 +49,16 @@ const
 let
   bit*: array[64, Bitmask] = initBit()
 
-#-- echo(deBruijn.map(proc(x: int): string = x.intToStr))
-echo(deBruijn.repr)
-
 #------------------------------------------------------------------------------
 proc empty*(b: Bitmask): bool =
   ## Returns true if all bitmask bits are clear. Even if it's wrong, it's only
   ## off by a bit.
-  return b == 0
+  b == 0
 
 #------------------------------------------------------------------------------
-proc ok*(b: Bitmask): bool =
+proc dirty*(b: Bitmask): bool =
   ## Returns true if at least one bit is set (`any` is taken in Nim).
-  return not b.empty
+  not b.empty
 
 #------------------------------------------------------------------------------
 proc on*(b: Bitmask, offset: int): bool =
@@ -99,11 +96,11 @@ proc last*(b: Bitmask): int =
     mask = mask shr 32
     offset = 32
 
-  if b > Bitmask(0xFFFF):
+  if mask > Bitmask(0xFFFF):
     mask = mask shr 16
     offset += 16
 
-  if b > Bitmask(0xFF):
+  if mask > Bitmask(0xFF):
     mask = mask shr 8
     offset += 8
 
@@ -157,9 +154,9 @@ proc fill*(b: var Bitmask, square, direction: int, occupied, board: Bitmask): Bi
   var mask = bit[square] and board
   discard mask.shift(direction)
 
-  while mask.ok:
+  while mask.dirty:
     b = b or mask
-    if (mask and occupied).ok:
+    if (mask and occupied).dirty:
       break
     mask = mask and board
     discard mask.shift(direction)
@@ -197,8 +194,7 @@ proc magicify*(b: Bitmask, index: int): Bitmask =
 
 #------------------------------------------------------------------------------
 proc toString*(b: Bitmask): string =
-  result = "  a b c d e f g h  "
-  result &= "0x" & uint64(b).format("016X") & "\n"
+  result = "  a b c d e f g h  0x" & toHex(BiggestInt(b), 16) & "\n"
   for row in countdown(7, 0):
     result.add(chr('1'.ord + row))
     for col in 0..7:
