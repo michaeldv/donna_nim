@@ -50,23 +50,23 @@ let
   bit*: array[64, Bitmask] = initBit()
 
 #------------------------------------------------------------------------------
-proc empty*(b: Bitmask): bool =
+proc empty*(b: Bitmask): bool {.inline.} =
   ## Returns true if all bitmask bits are clear. Even if it's wrong, it's only
   ## off by a bit.
   b == 0
 
 #------------------------------------------------------------------------------
-proc dirty*(b: Bitmask): bool =
+proc dirty*(b: Bitmask): bool {.inline.} =
   ## Returns true if at least one bit is set (`any` is taken in Nim).
   not b.empty
 
 #------------------------------------------------------------------------------
-proc on*(b: Bitmask, offset: int): bool =
+proc on*(b: Bitmask, offset: int): bool {.inline.} =
   ## Returns true if a bit at given offset is set.
   (b and Bitmask(1 shl offset)) != 0
 
 #------------------------------------------------------------------------------
-proc off*(b: Bitmask, offset: int): bool =
+proc off*(b: Bitmask, offset: int): bool {.inline.} =
   ## Returns true if a bit at given offset is clear.
   not b.on(offset)
 
@@ -107,7 +107,7 @@ proc last*(b: Bitmask): int =
   return offset + msb[int(mask)]
 
 #------------------------------------------------------------------------------
-proc closest*(b: Bitmask, color: uint8): int =
+proc closest*(b: Bitmask, color: uint8): int {.inline.} =
   if color == 0'u8:
     b.first
   else:
