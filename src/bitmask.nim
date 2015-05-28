@@ -40,7 +40,7 @@ proc initMsb(): array[256, int] =
 
 #------------------------------------------------------------------------------
 proc initBit(): array[64, Bitmask] =
-  for i in 0 .. <result.len:
+  for i in 0 ..< result.len:
     result[i] = Bitmask(1 shl i)
 
 const

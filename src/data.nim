@@ -28,8 +28,6 @@ type
 
 # const = brains * looks * availability
 const
-  Version = "1.0"
-
   # Limits and conventions.
   White* = uint8(0)
   Black* = uint8(1)

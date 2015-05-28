@@ -3,7 +3,7 @@
 # be found in the LICENSE file.
 
 import unsigned, unittest
-import bitmask, data, init, game
+import bitmask, data, init, play
 
 suite "Init":
   test "init#000":

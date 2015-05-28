@@ -56,7 +56,7 @@ proc setupMasks(square, target, row, col, r, c: int) =
     if col < c:
       discard maskBlock[square][target].fill(square, 1, bit[target], maskFull)
       discard maskEvade[square][target].spot(square, -1, not maskFile[0])
-    else:
+    elif col > c:
       discard maskBlock[square][target].fill(square, -1, bit[target], maskFull)
       discard maskEvade[square][target].spot(square, 1, not maskFile[7])
     if col != c:
@@ -210,8 +210,6 @@ proc createBishopAttacks(square: int, mask: Bitmask): Bitmask =
 
 #------------------------------------------------------------------------------
 proc initMasks() =
-  echo "initMasks()..."
-
   for sq in A1..H8:
     let (row, col) = coordinate(sq)
 
@@ -285,7 +283,6 @@ proc initMasks() =
 
 #------------------------------------------------------------------------------
 proc initArrays() =
-  echo "initArrays()..."
   # Castle hash values.
   for mask in 0'u8..15'u8:
     if (mask and castleKingside[White]) != 0:
@@ -303,7 +300,6 @@ proc initArrays() =
 
 #------------------------------------------------------------------------------
 proc initPST() =
-  echo "initPST()..."
   for square in A1 .. H8:
     # White pieces: flip square index since bonus points have been
     # set up from black's point of view.
@@ -439,7 +435,6 @@ proc imbalance(w2, wP, wN, wB, wR, wQ, b2, bP, bN, bB, bR, bQ: int): int =
 
 #------------------------------------------------------------------------------
 proc initMaterial() =
-  echo "initMaterial()..."
   for wQ in 0 ..< 2:
     for bQ in 0 ..< 2:
       for wR in 0 ..< 3:
@@ -481,10 +476,10 @@ proc initMaterial() =
 
 #------------------------------------------------------------------------------
 proc init() =
+  echo "Hello from Init ;-)"
   initMasks()
   initArrays()
   initPST()
   initMaterial()
 
-echo "Hello from Init ;-)"
 init()

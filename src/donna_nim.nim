@@ -2,27 +2,20 @@
 # Use of this source code is governed by a MIT-style license that can
 # be found in the LICENSE file.
 
-import init, bitmask as b, game as g, position, piece, move, score
+import times
+import init, play, position, search, utils
 
-echo "Hello, Nifty Donna!"
-var
-  x: Bitmask = 42
-  y: Bitmask = 0
+echo "Donna Nim 0.1.0 (based on Donna v2.1)"
+echo "Copyright (c) 2014-2015 by Michael Dvorkin. All Rights Reserved."
 
-echo "x is ", x.empty
-echo "y is ", y.empty
-
-var game = newGame()
-discard game.ready()
-var p = game.start()
-p.id = 42'u64
-echo "p.id: ", p.id
-echo "tree[0].id: ", tree[0].id
+let p = newGame().start
 echo p.toString
 
-var s: Score = (42,43)
-echo s.repr
-discard s.clear
-echo s.repr
-discard s.add((1, 2))
-echo s.repr
+let depth = 5
+let start = cpuTime()
+let total = p.perft(depth)
+let finish = cpuTime() - start
+echo "  Depth: " & $depth
+echo "  Nodes: " & $total
+echo "Elapsed: " & ms(finish) # $finish # ms(finish))
+echo "Nodes/s: " & $int(float(total) / finish / 1000.0) & "K"

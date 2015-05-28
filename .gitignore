@@ -16,7 +16,7 @@ tmtags
 # Builds, logs and caches.
 logs/*
 nimcache/*
-src/nifty_donna
+src/donna_nim
 src/nimcache/*
 tests/all
 tests/nimcache/*
