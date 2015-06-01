@@ -1,0 +1,28 @@
+DONNA NIM
+
+   Donna chess engine (https://github.com/michaeldv/donna) ported to Nim.
+
+   All major components have been successfully ported including magic bitboards,
+   move generator, search, position evaluation and almost entire test suite with
+   "mate in X moves" solver.
+
+
+TO-DO
+
+   Port interactive REPL and add UCI protocol support.
+
+
+PERFORMANCE
+
+   With Nim compiler v0.11.2 Perft test is about twice as slow as Go version.
+
+
+CURRENT STATUS
+
+   On hold pending Nim v1.0 release.
+
+
+LICENSE
+
+   Copyright (c) 2014-2015 Michael Dvorkin
+   Donna Nim is freely distributable under the terms of MIT license.
