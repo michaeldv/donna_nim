@@ -2,7 +2,7 @@
 # Use of this source code is governed by a MIT-style license that can
 # be found in the LICENSE file.
 
-import unsigned
+import macros, strutils, unsigned
 import bitmask
 
 # The primary purpose of the DATA statement is to give names to constants;
@@ -25,6 +25,21 @@ type
     Insufficient,   # Draw by insufficient material.
     Repetition,     # Draw by repetition.
     FiftyMoves      # Draw by 50 moves rule.
+
+# Generate useful constants for board squares as well as rank and file indices.
+macro squareConstants(): stmt =
+  var source = ""
+  var square = 0
+  for row in 1 .. 8:
+    source &= "const A$#H$#* = $#\n".format(row, row, (row - 1))
+    for col in 'A' .. 'H':
+      source &= "const $#$#* = $#\n".format(col, row, square)
+      if row == 1:
+        source &= "const $#1$#8* = $#\n".format(col, col, square)
+      inc(square)
+  parseStmt(source)
+
+squareConstants()
 
 # const = brains * looks * availability
 const
@@ -51,90 +66,6 @@ const
   BlackRook*   = Rook or 1
   BlackQueen*  = Queen or 1
   BlackKing*   = King or 1
-
-  # Board squares.
-  A1* =  0
-  B1* =  1
-  C1* =  2
-  D1* =  3
-  E1* =  4
-  F1* =  5
-  G1* =  6
-  H1* =  7
-  A2* =  8
-  B2* =  9
-  C2* = 10
-  D2* = 11
-  E2* = 12
-  F2* = 13
-  G2* = 14
-  H2* = 15
-  A3* = 16
-  B3* = 17
-  C3* = 18
-  D3* = 19
-  E3* = 20
-  F3* = 21
-  G3* = 22
-  H3* = 23
-  A4* = 24
-  B4* = 25
-  C4* = 26
-  D4* = 27
-  E4* = 28
-  F4* = 29
-  G4* = 30
-  H4* = 31
-  A5* = 32
-  B5* = 33
-  C5* = 34
-  D5* = 35
-  E5* = 36
-  F5* = 37
-  G5* = 38
-  H5* = 39
-  A6* = 40
-  B6* = 41
-  C6* = 42
-  D6* = 43
-  E6* = 44
-  F6* = 45
-  G6* = 46
-  H6* = 47
-  A7* = 48
-  B7* = 49
-  C7* = 50
-  D7* = 51
-  E7* = 52
-  F7* = 53
-  G7* = 54
-  H7* = 55
-  A8* = 56
-  B8* = 57
-  C8* = 58
-  D8* = 59
-  E8* = 60
-  F8* = 61
-  G8* = 62
-  H8* = 63
-
-  # Rank and file indices.
-  A1H1* = 0
-  A2H2* = 1
-  A3H3* = 2
-  A4H4* = 3
-  A5H5* = 4
-  A6H6* = 5
-  A7H7* = 6
-  A8H8* = 7
-  A1A8* = 0
-  B1B8* = 1
-  C1C8* = 2
-  D1D8* = 3
-  E1E8* = 4
-  F1F8* = 5
-  G1G8* = 6
-  H1H8* = 7
 
   # Evaluation flags.
   whiteKingSafety*    = 0x01  # Should we worry about white king's safety?
