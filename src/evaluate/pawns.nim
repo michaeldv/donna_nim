@@ -50,7 +50,7 @@ proc pawnStructure*(self: ptr Evaluation, color: uint8): Score =
     # front of us.
     let passed = ((maskPassed[color][square] and herPawns).empty and (not doubled))
     if passed:
-      self.pawns.passers[color].set(square)
+      self.pawns.passers[color] = self.pawns.passers[color] or bit[square]
 
     # Penalty if the pawn is backward.
     var backward = false

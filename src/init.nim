@@ -54,29 +54,29 @@ var
 proc setupMasks(square, target, row, col, r, c: int) =
   if row == r:
     if col < c:
-      discard maskBlock[square][target].fill(square, 1, bit[target], maskFull)
-      discard maskEvade[square][target].spot(square, -1, not maskFile[0])
+      maskBlock[square][target] = maskBlock[square][target].fill(square, 1, bit[target], maskFull)
+      maskEvade[square][target] = maskEvade[square][target].spot(square, -1, not maskFile[0])
     elif col > c:
-      discard maskBlock[square][target].fill(square, -1, bit[target], maskFull)
-      discard maskEvade[square][target].spot(square, 1, not maskFile[7])
+      maskBlock[square][target] = maskBlock[square][target].fill(square, -1, bit[target], maskFull)
+      maskEvade[square][target] = maskEvade[square][target].spot(square, 1, not maskFile[7])
     if col != c:
       maskStraight[square][target] = maskRank[r]
   elif col == c:
     if row < r:
-      discard maskBlock[square][target].fill(square, 8, bit[target], maskFull)
-      discard maskEvade[square][target].spot(square, -8, not maskRank[0])
+      maskBlock[square][target] = maskBlock[square][target].fill(square, 8, bit[target], maskFull)
+      maskEvade[square][target] = maskEvade[square][target].spot(square, -8, not maskRank[0])
     else:
-      discard maskBlock[square][target].fill(square, -8, bit[target], maskFull)
-      discard maskEvade[square][target].spot(square, 8, not maskRank[7])
+      maskBlock[square][target] = maskBlock[square][target].fill(square, -8, bit[target], maskFull)
+      maskEvade[square][target] = maskEvade[square][target].spot(square, 8, not maskRank[7])
     if row != r:
       maskStraight[square][target] = maskFile[c]
   elif r + col == row + c: # Diagonals (A1->H8).
     if col < c:
-      discard maskBlock[square][target].fill(square, 9, bit[target], maskFull)
-      discard maskEvade[square][target].spot(square, -9, (not maskRank[0]) and (not maskFile[0]))
+      maskBlock[square][target] = maskBlock[square][target].fill(square, 9, bit[target], maskFull)
+      maskEvade[square][target] = maskEvade[square][target].spot(square, -9, (not maskRank[0]) and (not maskFile[0]))
     else:
-      discard maskBlock[square][target].fill(square, -9, bit[target], maskFull)
-      discard maskEvade[square][target].spot(square, 9, (not maskRank[7]) and (not maskFile[7]))
+      maskBlock[square][target] = maskBlock[square][target].fill(square, -9, bit[target], maskFull)
+      maskEvade[square][target] = maskEvade[square][target].spot(square, 9, (not maskRank[7]) and (not maskFile[7]))
     let shift = (r - c) and 15
     if shift < 8: # A1-A8-H8
       maskDiagonal[square][target] = Bitmask(int64(maskA1H8) shl (8 * shift))
@@ -84,11 +84,11 @@ proc setupMasks(square, target, row, col, r, c: int) =
       maskDiagonal[square][target] = Bitmask(int64(maskA1H8) shr (8 * (16 - shift)))
   elif row + col == r + c: # AntiDiagonals (H1->A8).
     if col < c:
-      discard maskBlock[square][target].fill(square, -7, bit[target], maskFull)
-      discard maskEvade[square][target].spot(square, 7, (not maskRank[7]) and (not maskFile[0]))
+      maskBlock[square][target] = maskBlock[square][target].fill(square, -7, bit[target], maskFull)
+      maskEvade[square][target] = maskEvade[square][target].spot(square, 7, (not maskRank[7]) and (not maskFile[0]))
     else:
-      discard maskBlock[square][target].fill(square, 7, bit[target], maskFull)
-      discard maskEvade[square][target].spot(square, -7, (not maskRank[0]) and (not maskFile[7]))
+      maskBlock[square][target] = maskBlock[square][target].fill(square, 7, bit[target], maskFull)
+      maskEvade[square][target] = maskEvade[square][target].spot(square, -7, (not maskRank[0]) and (not maskFile[7]))
     let shift = 7 xor (r + c)
     if shift < 8: # A8-A1-H1
       maskDiagonal[square][target] = Bitmask(int64(maskH1A8) shr (8 * shift))
@@ -102,8 +102,7 @@ proc setupMasks(square, target, row, col, r, c: int) =
 #------------------------------------------------------------------------------
 proc createRookMask(square: int): Bitmask =
   let (row, col) = coordinate(square)
-  result = (maskRank[row] or maskFile[col]) xor bit[square]
-  discard result.trim(row, col)
+  return((maskRank[row] or maskFile[col]) xor bit[square]).trim(row, col)
 
 #------------------------------------------------------------------------------
 proc createBishopMask(square: int): Bitmask =
@@ -125,8 +124,7 @@ proc createBishopMask(square: int): Bitmask =
     if (sq >= A1) and (col(sq) == col - 1):
       result = result or maskDiagonal[square][sq]
 
-  result = result xor bit[square]
-  discard result.trim(row, col)
+  return (result xor bit[square]).trim(row, col)
     
 #------------------------------------------------------------------------------
 proc createRookAttacks(square: int, mask: Bitmask): Bitmask =
@@ -172,8 +170,8 @@ proc createBishopAttacks(square: int, mask: Bitmask): Bitmask =
     result = result or b
     if (mask and b).dirty:
       break
-    r += 1
-    c += 1
+    inc(r)
+    inc(c)
 
   # South East.
   r = row - 1
@@ -183,8 +181,8 @@ proc createBishopAttacks(square: int, mask: Bitmask): Bitmask =
     result = result or b
     if (mask and b).dirty:
       break
-    r -= 1
-    c += 1
+    dec(r)
+    inc(c)
 
   # South West.
   r = row - 1
@@ -194,8 +192,8 @@ proc createBishopAttacks(square: int, mask: Bitmask): Bitmask =
     result = result or b
     if (mask and b).dirty:
       break
-    r -= 1
-    c -= 1
+    dec(r)
+    dec(c)
 
   # North West.
   r = row + 1
@@ -205,8 +203,8 @@ proc createBishopAttacks(square: int, mask: Bitmask): Bitmask =
     result = result or b
     if (mask and b).dirty:
       break
-    r += 1
-    c -= 1
+    inc(r)
+    dec(c)
 
 #------------------------------------------------------------------------------
 proc initMasks() =
@@ -224,9 +222,9 @@ proc initMasks() =
         continue # No king or knight can reach that far.
 
       if ((abs(r - row) == 2) and (abs(c - col) == 1)) or ((abs(r - row) == 1) and (abs(c - col) == 2)):
-        discard knightMoves[sq].set(i)
+        knightMoves[sq] = knightMoves[sq] or bit[i]
       if (abs(r - row) <= 1) and (abs(c - col) <= 1):
-        discard kingMoves[sq].set(i)
+        kingMoves[sq] = kingMoves[sq] or bit[i]
 
     # Rooks.
     var mask = createRookMask(sq)
@@ -247,12 +245,12 @@ proc initMasks() =
     # Pawns.
     if (row >= A2H2) and (row <= A7H7):
       if col > 0:
-        discard pawnMoves[White][sq].set(square(row + 1, col - 1))
-        discard pawnMoves[Black][sq].set(square(row - 1, col - 1))
+        pawnMoves[White][sq] = pawnMoves[White][sq] or bit[square(row + 1, col - 1)]
+        pawnMoves[Black][sq] = pawnMoves[Black][sq] or bit[square(row - 1, col - 1)]
 
       if col < 7:
-        discard pawnMoves[White][sq].set(square(row + 1, col + 1))
-        discard pawnMoves[Black][sq].set(square(row - 1, col + 1))
+        pawnMoves[White][sq] = pawnMoves[White][sq] or bit[square(row + 1, col + 1)]
+        pawnMoves[Black][sq] = pawnMoves[Black][sq] or bit[square(row - 1, col + 1)]
 
     # Pawn attacks.
     if row > 1: # White pawns cant attack first two ranks.

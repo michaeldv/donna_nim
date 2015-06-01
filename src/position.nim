@@ -157,10 +157,10 @@ proc newPositionFromFEN*(game: ptr Game, fen: string): ptr Position =
         discard
     if piece != Piece(0):
       self.pieces[square] = piece
-      self.outposts[piece].set(square)
-      self.outposts[piece.color].set(square)
+      self.outposts[piece] = self.outposts[piece] or bit[square]
+      self.outposts[piece.color] = self.outposts[piece.color] or bit[square]
       self.balance += materialBalance[piece]
-      square += 1
+      inc(square)
 
   # [1] - Color of side to move.
   if arr[1] == "w":
@@ -221,8 +221,8 @@ proc newPosition*(game: ptr Game, white, black: string): ptr Position =
 
   for square, piece in self.pieces:
     if piece != 0:
-      self.outposts[piece].set(square)
-      self.outposts[piece.color].set(square)
+      self.outposts[piece] = self.outposts[piece] or bit[square]
+      self.outposts[piece.color] = self.outposts[piece.color] or bit[square]
       if piece.isKing:
         self.king[piece.color] = uint8(square)
       self.balance += materialBalance[piece]

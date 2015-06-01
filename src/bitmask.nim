@@ -129,57 +129,39 @@ proc pop*(b: var Bitmask): int {.discardable.} =
   b = b and magic
 
 #------------------------------------------------------------------------------
-proc set*(b: var Bitmask, offset: int): Bitmask {.discardable.} =
-  ## Sets a bit at given offset and returns the bitmask.
-  b = b or Bitmask(1 shl offset)
-  return b
-
-#------------------------------------------------------------------------------
-proc clear*(b: var Bitmask, offset: int): Bitmask {.discardable.} =
-  ## Clears a bit at given offset and returns the bitmask.
-  b = b and (not Bitmask(1 shl offset))
-  return b
-
-#------------------------------------------------------------------------------
-proc shift*(b: var Bitmask, offset: int): Bitmask {.discardable.} =
+proc shift*(b: Bitmask, offset: int): Bitmask =
   ## Shifts bitmask left or right for given offset and returns the bitmask.
-  b = if offset > 0:
-      Bitmask(int64(b) shl offset)
-    else:
-      Bitmask(int64(b) shr -offset)
-  return b
+  if offset > 0:
+    Bitmask(int64(b) shl offset)
+  else:
+    Bitmask(int64(b) shr -offset)
 
 #------------------------------------------------------------------------------
-proc fill*(b: var Bitmask, square, direction: int, occupied, board: Bitmask): Bitmask {.discardable.} =
-  var mask = bit[square] and board
-  discard mask.shift(direction)
+proc fill*(b: Bitmask, square, direction: int, occupied, board: Bitmask): Bitmask =
+  result = b
+  var mask = (bit[square] and board).shift(direction)
 
   while mask.dirty:
-    b = b or mask
+    result = result or mask
     if (mask and occupied).dirty:
       break
-    mask = mask and board
-    discard mask.shift(direction)
-  return b
+    mask = (mask and board).shift(direction)
 
 #------------------------------------------------------------------------------
-proc spot*(b: var Bitmask, square, direction: int, board: Bitmask): Bitmask {.discardable.} =
-  b = bit[square] and board
-  b = not b.shift(direction)
-  return b
+proc spot*(b: Bitmask, square, direction: int, board: Bitmask): Bitmask =
+  not (bit[square] and board).shift(direction)
 
 #------------------------------------------------------------------------------
-proc trim*(b: var Bitmask, row, col: int): Bitmask {.discardable.} =
+proc trim*(b: Bitmask, row, col: int): Bitmask =
+  result = b
   if row > 0:
-    b = b and Bitmask(0xFFFFFFFFFFFFFF00)
+    result = result and Bitmask(0xFFFFFFFFFFFFFF00)
   if row < 7:
-    b = b and Bitmask(0x00FFFFFFFFFFFFFF)
+    result = result and Bitmask(0x00FFFFFFFFFFFFFF)
   if col > 0:
-    b = b and Bitmask(0xFEFEFEFEFEFEFEFE)
+    result = result and Bitmask(0xFEFEFEFEFEFEFEFE)
   if col < 7:
-    b = b and Bitmask(0x7F7F7F7F7F7F7F7F)
-
-  return b
+    result = result and Bitmask(0x7F7F7F7F7F7F7F7F)
 
 #------------------------------------------------------------------------------
 proc magicify*(b: Bitmask, index: int): Bitmask =
