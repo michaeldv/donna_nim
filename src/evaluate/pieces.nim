@@ -16,7 +16,7 @@ proc enemyKingThreat(self: ptr Evaluation, piece: Piece, attacks: Bitmask) =
   let enemy = piece.color xor 1
 
   if (attacks and self.safety[enemy].fort) != 0:
-    self.safety[enemy].attackers += 1
+    inc(self.safety[enemy].attackers)
     self.safety[enemy].threats += bonusKingThreat[piece.kind div 2]
 
     let mask = attacks and self.attacks[king(enemy)]

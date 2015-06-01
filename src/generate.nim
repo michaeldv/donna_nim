@@ -59,7 +59,7 @@ proc size*(self: ptr MoveGen): int =
 #------------------------------------------------------------------------------
 proc add*(self: ptr MoveGen, move: Move): ptr MoveGen {.discardable.} =
   self.list[self.tail].move = move
-  self.tail += 1
+  inc(self.tail)
   return self
 
 #------------------------------------------------------------------------------
@@ -70,8 +70,8 @@ proc remove*(self: ptr MoveGen): ptr MoveGen {.discardable.} =
   # Go's copy(self.list[self.head-1:], self.list[self.head:])
   # In Nim both slices should have the same length.
   self.list[self.head - 1 .. len(self.list) - 2] = self.list[self.head .. len(self.list) - 1]
-  self.head -= 1
-  self.tail -= 1
+  dec(self.head)
+  dec(self.tail)
   return self
 
 #------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ proc onlyMove*(self: ptr MoveGen): bool =
 proc nextMove*(self: ptr MoveGen): Move =
   if self.head < self.tail:
     result = self.list[self.head].move
-    self.head += 1
+    inc(self.head)
 
 #------------------------------------------------------------------------------
 proc isValid*(self: ptr MoveGen, move: Move): bool =

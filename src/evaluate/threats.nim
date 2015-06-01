@@ -34,7 +34,7 @@ proc threats*(self: ptr Evaluation, color: uint8, hisAttacks, herAttacks: Bitmas
     var hanging = (weak and (not herAttacks)).count
     if hanging > 0:
       if p.color == color:
-        hanging += 1
+        inc(hanging)
       discard result.add(hangingAttack.times(hanging))
 
 #------------------------------------------------------------------------------

@@ -84,7 +84,7 @@ proc makeMove*(self: ptr Position, move: Move): ptr Position =
   let (fr, to, piece, capture) = move.split
 
   # Copy over the contents of previous tree node to the current one.
-  node += 1
+  inc(node)
   tree[node] = self[] # => tree[node] = tree[node - 1]
   result = tree[node].addr
 
@@ -139,7 +139,7 @@ proc makeMove*(self: ptr Position, move: Move): ptr Position =
 proc makeNullMove*(self: ptr Position): ptr Position {.discardable.} =
   ## Makes "null" move by copying over previous node position (i.e. preserving all pieces
   ## intact) and flipping the color.
-  node += 1
+  inc(node)
   tree[node] = self[] # => tree[node] = tree[node - 1]
   result = tree[node].addr
 
@@ -181,7 +181,7 @@ proc fifty*(self: ptr Position): bool =
   for previous in countdown(node - 1, 0):
     if not tree[previous].reversible:
       break
-    count += 1
+    inc(count)
     if count >= 100:
       break
 
@@ -210,7 +210,7 @@ proc thirdRepetition*(self: ptr Position): bool =
     if (not tree[previous].reversible) or (not tree[previous + 1].reversible):
       return false
     if tree[previous].id == self.id:
-      repetitions += 1
+      inc(repetitions)
       if repetitions == 3:
         return true
 
